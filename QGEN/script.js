@@ -42,10 +42,9 @@ async function getQuote() {
     }
     //reset the check!
     removeLoadingSpinner();
-    throw new Error("ben");
   } catch (err) {
     console.log(count);
-    if (count <= 5) {
+    if (count < 5) {
       getQuote();
     }
     console.log("err: ", err);
