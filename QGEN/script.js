@@ -10,20 +10,20 @@ const loader = document.getElementById("loader");
 const proxURL = "https://cors-anywhere.herokuapp.com/";
 const apiURL = "http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json";
 
-function loading() {
+function showLoadingSpinner() {
   loader.hidden = false;
   quoteBox.hidden = true;
 }
 
-function completecheck() {
+function removeLoadingSpinner() {
   if (!loader.hidden) {
     loader.hidden = true;
     quoteBox.hidden = false;
   }
 }
-completecheck();
+let count = 1;
 async function getQuote() {
-  loading();
+  showLoadingSpinner();
   try {
     const resp = await fetch(proxURL + apiURL);
     const data = await resp.json();
@@ -41,15 +41,19 @@ async function getQuote() {
       quoteAuthor.innerText = data.quoteAuthor;
     }
     //reset the check!
-    completecheck();
+    removeLoadingSpinner();
+    throw new Error("ben");
   } catch (err) {
-    getQuote();
-
+    console.log(count);
+    if (count <= 5) {
+      getQuote();
+    }
     console.log("err: ", err);
+    count += count;
   }
 }
-//Twitter Web Intent Button
 
+//Twitter Web Intent Button
 function twitterButtonMeta() {
   if (quoteText.innerText !== "") {
     const webURL = `https://twitter.com/intent/tweet?text=${quoteText.innerText} - ${quoteAuthor.innerText}`;
@@ -61,3 +65,4 @@ function twitterButtonMeta() {
 
 twtBtn.addEventListener("click", twitterButtonMeta);
 quoteBtn.addEventListener("click", getQuote);
+getQuote();
